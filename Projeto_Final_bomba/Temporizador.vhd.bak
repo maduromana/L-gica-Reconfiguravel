@@ -1,0 +1,43 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity Temporizador is
+    port (
+        clk_1hz    : in  std_logic;
+        reset      : in  std_logic;
+        enable     : in  std_logic;
+        led_out    : out std_logic_vector(9 downto 0);
+        time_is_up : out std_logic
+    );
+end entity Temporizador;
+
+architecture rtl of Temporizador is
+    constant INITIAL_TIME : integer := 30;
+    signal count : integer range 0 to INITIAL_TIME := INITIAL_TIME;
+begin
+    process(clk_1hz, reset)
+    begin
+        if reset = '1' then
+            count <= INITIAL_TIME;
+        elsif rising_edge(clk_1hz) then
+            if enable = '1' and count > 0 then
+                count <= count - 1;
+            end if;
+        end if;
+    end process;
+    time_is_up <= '1' when count = 0 else '0';
+    process(count)
+        variable leds_on : integer;
+    begin
+        if count > 0 then
+            leds_on := (count + 2) / 3;
+            led_out <= (others => '0');
+            if leds_on > 0 then
+                led_out(leds_on - 1 downto 0) <= (others => '1');
+            end if;
+        else
+            led_out <= (others => '0');
+        end if;
+    end process;
+end architecture rtl;

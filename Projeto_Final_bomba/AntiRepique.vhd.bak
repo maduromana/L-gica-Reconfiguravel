@@ -1,0 +1,45 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity AntiRepique is
+    port (
+        clk      : in  std_logic;
+        button_in: in  std_logic;
+        pulse_out: out std_logic
+    );
+end entity AntiRepique;
+
+architecture rtl of AntiRepique is
+    constant DEBOUNCE_LIMIT : integer := 500000;
+    type state_t is (IDLE, WAIT_STABLE, WAIT_RELEASE);
+    signal state      : state_t := IDLE;
+    signal counter    : integer range 0 to DEBOUNCE_LIMIT := 0;
+begin
+    process(clk)
+    begin
+        if rising_edge(clk) then
+            pulse_out <= '0';
+            case state is
+                when IDLE =>
+                    if button_in = '1' then
+                        state <= WAIT_STABLE;
+                    end if;
+                    counter <= 0;
+                when WAIT_STABLE =>
+                    if button_in = '0' then
+                        state <= IDLE;
+                    elsif counter = DEBOUNCE_LIMIT then
+                        pulse_out <= '1';
+                        state <= WAIT_RELEASE;
+                    end if;
+                    counter <= counter + 1;
+                when WAIT_RELEASE =>
+                    if button_in = '0' then
+                        state <= IDLE;
+                    end if;
+                    counter <= 0;
+            end case;
+        end if;
+    end process;
+end architecture rtl;

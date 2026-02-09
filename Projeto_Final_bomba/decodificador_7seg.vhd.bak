@@ -1,0 +1,29 @@
+library ieee;
+use ieee.std_logic_1164.all;
+
+entity decodificador_7seg is
+    port (
+        digit_in  : in  std_logic_vector(3 downto 0);
+        segments_out : out std_logic_vector(6 downto 0)
+    );
+end entity;
+
+architecture rtl of decodificador_7seg is
+begin
+    process(digit_in)
+    begin
+        case digit_in is
+            when x"0" => segments_out <= "1000000"; -- 0
+            when x"1" => segments_out <= "1111001"; -- 1
+            when x"2" => segments_out <= "0100100"; -- 2
+            when x"3" => segments_out <= "0110000"; -- 3
+            when x"4" => segments_out <= "0011001"; -- 4
+            when x"5" => segments_out <= "0010010"; -- 5
+            when x"6" => segments_out <= "0000010"; -- 6
+            when x"7" => segments_out <= "1111000"; -- 7
+            when x"8" => segments_out <= "0000000"; -- 8
+            when x"9" => segments_out <= "0010000"; -- 9
+            when others => segments_out <= "1111111";
+        end case;
+    end process;
+end architecture;

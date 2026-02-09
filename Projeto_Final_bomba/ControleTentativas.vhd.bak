@@ -1,0 +1,30 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity ControleTentativas is
+    port (
+        clk            : in  std_logic;
+        reset          : in  std_logic;
+        check_attempt  : in  std_logic;
+        sem_tentativas : out std_logic
+    );
+end entity ControleTentativas;
+
+architecture rtl of ControleTentativas is
+    signal tentativas_restantes : integer range 0 to 3 := 3;
+begin
+    process(clk, reset)
+    begin
+        if reset = '1' then
+            tentativas_restantes <= 3;
+        elsif rising_edge(clk) then
+            if check_attempt = '1' then
+                if tentativas_restantes > 0 then
+                    tentativas_restantes <= tentativas_restantes - 1;
+                end if;
+            end if;
+        end if;
+    end process;
+    sem_tentativas <= '1' when tentativas_restantes = 0 else '0';
+end architecture rtl;
