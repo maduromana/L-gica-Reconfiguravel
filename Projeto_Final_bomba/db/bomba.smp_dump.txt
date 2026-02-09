@@ -1,0 +1,13 @@
+
+State Machine - |bomba|current_state
+Name current_state.S_EXPLODED current_state.S_DEFUSED current_state.S_CHECK current_state.S_ARMED 
+current_state.S_ARMED 0 0 0 0 
+current_state.S_CHECK 0 0 1 1 
+current_state.S_DEFUSED 0 1 0 1 
+current_state.S_EXPLODED 1 0 0 1 
+
+State Machine - |bomba|AntiRepique:inst_anti_repique|state
+Name state.WAIT_RELEASE state.WAIT_STABLE state.IDLE 
+state.IDLE 0 0 0 
+state.WAIT_STABLE 0 1 1 
+state.WAIT_RELEASE 1 0 1 
